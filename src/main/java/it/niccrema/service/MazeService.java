@@ -24,9 +24,6 @@ import it.niccrema.model.Route;
 
 public class MazeService {
     Maze maze;
-    Route route;
-
-    Queue<Room> roomsQueue;
 
     public MazeService(String mazeFilePath) throws IOException {
         try (Reader reader = Files.newBufferedReader(Paths.get(mazeFilePath));) {
@@ -47,12 +44,13 @@ public class MazeService {
     }
 
     public Route findItems(Integer roomId, Set<Item> itemsToCollect) {
-        route = new Route();
+        Route route = new Route();
+
         Room startRoom = maze.getMazeMap().get(roomId);
 
-        roomsQueue = new LinkedList<Room>();
+        Queue<Room> roomsQueue = new LinkedList<Room>();
         
-        visitRoom(startRoom, itemsToCollect);
+        visitRoom(startRoom, itemsToCollect, route);
         roomsQueue.add(startRoom);
         
         while ((!roomsQueue.isEmpty() && !itemsToCollect.isEmpty())) {
@@ -67,7 +65,7 @@ public class MazeService {
                     if(nextRoomToVisit.isPresent()){
                         Room visitingRoom = nextRoomToVisit.get();
                         room.getConnectedRoomsToVisit().remove(visitingRoom);
-                        visitRoom(visitingRoom, itemsToCollect);
+                        visitRoom(visitingRoom, itemsToCollect, route);
                                  
                         if(itemsToCollect.isEmpty() || allRoomsAreVisited()){
                             break;
@@ -75,7 +73,7 @@ public class MazeService {
     
                         //current node has more neighbors, step back into it
                         if(!room.getConnectedRoomsToVisit().isEmpty()){
-                            visitRoom(room, itemsToCollect);
+                            visitRoom(room, itemsToCollect, route);
                             roomsQueue.add(room);
                         }else{  
                             //all neighbours visited, stay in the last neighbour
@@ -128,7 +126,7 @@ public class MazeService {
         return Optional.ofNullable(nextRoom);
     }
 
-    private void visitRoom(Room room, Set<Item> itemsToCollect){
+    private void visitRoom(Room room, Set<Item> itemsToCollect, Route route){
         itemsToCollect.removeAll(room.getItems());
         room.setVisited(true);
         route.getSteps().add(room);
