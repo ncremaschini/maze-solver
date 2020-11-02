@@ -46,45 +46,38 @@ public class MazeService {
 
     public Route findItems(Integer roomId, Set<Item> itemsToCollect) {
         Route route = new Route();
-
+        Queue<Room> roomsQueue = new LinkedList<Room>();
         Room startRoom = maze.getMazeMap().get(roomId);
 
-        Queue<Room> roomsQueue = new LinkedList<Room>();
-        
         visitRoom(startRoom, itemsToCollect, route);
         roomsQueue.add(startRoom);
         
-        while ((!roomsQueue.isEmpty() && !itemsToCollect.isEmpty())) {
-            Optional<Room> roomOpt = Optional.ofNullable(roomsQueue.poll());
+        while (!roomsQueue.isEmpty() && !itemsToCollect.isEmpty()) {
+            Room room = roomsQueue.poll();
             
-            if(roomOpt.isPresent()){
+            while(!itemsToCollect.isEmpty() && !allRoomsAreVisited() && !allNeighboursAreVisited(room)){
+                Optional<Room> nextRoomToVisit = getNextNeighbourRoomToVisit(room);
                 
-                Room room = roomOpt.get();
+                if(nextRoomToVisit.isPresent()){
+                    Room visitingRoom = nextRoomToVisit.get();
+                
+                    visitRoom(visitingRoom, itemsToCollect, route);
+                                
+                    if(itemsToCollect.isEmpty() || allRoomsAreVisited()){
+                        break;
+                    }
 
-                while(!itemsToCollect.isEmpty() && !allRoomsAreVisited() && !allNieghboursAreVisited(room)){
-                    Optional<Room> nextRoomToVisit = getNextNeighbourRoomToVisit(room);
-                    
-                    if(nextRoomToVisit.isPresent()){
-                        Room visitingRoom = nextRoomToVisit.get();
-                        room.getConnectedRoomsToVisit().remove(visitingRoom);
-
-                        visitRoom(visitingRoom, itemsToCollect, route);
-                                 
-                        if(itemsToCollect.isEmpty() || allRoomsAreVisited()){
-                            break;
-                        }
-    
-                        //current node has more neighbors, step back into it
-                        if(!allNieghboursAreVisited(room)){
-                            visitRoom(room, itemsToCollect, route);
-                            roomsQueue.add(room);
-                        }else{  
-                            //all neighbours visited, stay in the last neighbour
-                            roomsQueue.add(visitingRoom);         
-                        }
-                    } 
-                }//neighbours visited
-            }
+                    //current node has more neighbors, step back into it
+                    if(!allNeighboursAreVisited(room)){
+                        visitRoom(room, itemsToCollect, route);
+                        roomsQueue.add(room);
+                    }else{  
+                        //all neighbours visited, stay in the last neighbour
+                        roomsQueue.add(visitingRoom);         
+                    }
+                } 
+            }//neighbours visited
+            
         }
 
         return route;
@@ -101,7 +94,7 @@ public class MazeService {
         Set<Room> connectedRooms = Stream.of(room.getNorth(), room.getSouth(), room.getWest(), room.getEast())
                 .filter(Objects::nonNull).map(roomId -> maze.getMazeMap().get(roomId))
                 .collect(Collectors.toCollection(HashSet::new));
-        room.setConnectedRoomsToVisit(connectedRooms);
+        room.setConnectedRooms(connectedRooms);
     }
 
     private void calculateDirectionsMap(Room room) {
@@ -139,7 +132,7 @@ public class MazeService {
         return maze.getRooms().stream().allMatch(room -> room.isVisited());
     }
 
-    private boolean allNieghboursAreVisited(Room room) {
-        return room.getConnectedRoomsToVisit().isEmpty();
+    private boolean allNeighboursAreVisited(Room room) {
+        return room.getConnectedRooms().stream().allMatch(neighbour -> neighbour.isVisited());
     }
 }

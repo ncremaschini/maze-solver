@@ -23,10 +23,10 @@ public class Room{
     private Set<Item> items;
 
     @SerializedName(value = "rooms")
-    private Set<Room> connectedRoomsToVisit;
+    private Set<Room> connectedRooms;
 
     public Room(){
-        connectedRoomsToVisit = new HashSet<Room>();
+        connectedRooms = new HashSet<Room>();
         directionsMap = new HashMap<>();
     }
 
@@ -92,12 +92,12 @@ public class Room{
         this.items = items;
     }
     
-    public Set<Room> getConnectedRoomsToVisit(){
-        return connectedRoomsToVisit;
+    public Set<Room> getConnectedRooms(){
+        return connectedRooms;
     }
 
-    public void setConnectedRoomsToVisit(Set<Room> connectedRoomsToVisit){
-        this.connectedRoomsToVisit = connectedRoomsToVisit;
+    public void setConnectedRooms(Set<Room> connectedRooms){
+        this.connectedRooms = connectedRooms;
     }
 
     public Map<Direction,Integer> getDirectionsMap(){

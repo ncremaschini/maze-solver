@@ -35,10 +35,10 @@ public class MazeServiceTestMap1 {
 
     @Test
     public void shouldCalculateConnectedRooms(){
-        assertEquals(maze.getMazeMap().get(1).getConnectedRoomsToVisit().size(),1);
-        assertEquals(maze.getMazeMap().get(2).getConnectedRoomsToVisit().size(),3);
-        assertEquals(maze.getMazeMap().get(3).getConnectedRoomsToVisit().size(),1);
-        assertEquals(maze.getMazeMap().get(4).getConnectedRoomsToVisit().size(),1);
+        assertEquals(maze.getMazeMap().get(1).getConnectedRooms().size(),1);
+        assertEquals(maze.getMazeMap().get(2).getConnectedRooms().size(),3);
+        assertEquals(maze.getMazeMap().get(3).getConnectedRooms().size(),1);
+        assertEquals(maze.getMazeMap().get(4).getConnectedRooms().size(),1);
     }
 
     @Test
@@ -46,7 +46,7 @@ public class MazeServiceTestMap1 {
         assertEquals(maze.getMazeMap().get(1).getDirectionsMap().size(),1);
         assertEquals(maze.getMazeMap().get(2).getDirectionsMap().size(),3);
         assertEquals(maze.getMazeMap().get(3).getDirectionsMap().size(),1);
-        assertEquals(maze.getMazeMap().get(4).getConnectedRoomsToVisit().size(),1);
+        assertEquals(maze.getMazeMap().get(4).getConnectedRooms().size(),1);
     }
 
     @Test

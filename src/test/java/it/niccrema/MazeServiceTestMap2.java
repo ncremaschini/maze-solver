@@ -35,24 +35,24 @@ public class MazeServiceTestMap2 {
 
     @Test
     public void shouldCalculateConnectedRooms(){
-        assertEquals(maze.getMazeMap().get(1).getConnectedRoomsToVisit().size(),2);
-        assertEquals(maze.getMazeMap().get(2).getConnectedRoomsToVisit().size(),4);
-        assertEquals(maze.getMazeMap().get(3).getConnectedRoomsToVisit().size(),1);
-        assertEquals(maze.getMazeMap().get(4).getConnectedRoomsToVisit().size(),3);
-        assertEquals(maze.getMazeMap().get(5).getConnectedRoomsToVisit().size(),2);
-        assertEquals(maze.getMazeMap().get(6).getConnectedRoomsToVisit().size(),2);
-        assertEquals(maze.getMazeMap().get(7).getConnectedRoomsToVisit().size(),2);
+        assertEquals(maze.getMazeMap().get(1).getConnectedRooms().size(),2);
+        assertEquals(maze.getMazeMap().get(2).getConnectedRooms().size(),4);
+        assertEquals(maze.getMazeMap().get(3).getConnectedRooms().size(),1);
+        assertEquals(maze.getMazeMap().get(4).getConnectedRooms().size(),3);
+        assertEquals(maze.getMazeMap().get(5).getConnectedRooms().size(),2);
+        assertEquals(maze.getMazeMap().get(6).getConnectedRooms().size(),2);
+        assertEquals(maze.getMazeMap().get(7).getConnectedRooms().size(),2);
     }
 
     @Test
     public void shouldCalculateDirectionsMap(){
-        assertEquals(maze.getMazeMap().get(1).getConnectedRoomsToVisit().size(),2);
-        assertEquals(maze.getMazeMap().get(2).getConnectedRoomsToVisit().size(),4);
-        assertEquals(maze.getMazeMap().get(3).getConnectedRoomsToVisit().size(),1);
-        assertEquals(maze.getMazeMap().get(4).getConnectedRoomsToVisit().size(),3);
-        assertEquals(maze.getMazeMap().get(5).getConnectedRoomsToVisit().size(),2);
-        assertEquals(maze.getMazeMap().get(6).getConnectedRoomsToVisit().size(),2);
-        assertEquals(maze.getMazeMap().get(7).getConnectedRoomsToVisit().size(),2);
+        assertEquals(maze.getMazeMap().get(1).getConnectedRooms().size(),2);
+        assertEquals(maze.getMazeMap().get(2).getConnectedRooms().size(),4);
+        assertEquals(maze.getMazeMap().get(3).getConnectedRooms().size(),1);
+        assertEquals(maze.getMazeMap().get(4).getConnectedRooms().size(),3);
+        assertEquals(maze.getMazeMap().get(5).getConnectedRooms().size(),2);
+        assertEquals(maze.getMazeMap().get(6).getConnectedRooms().size(),2);
+        assertEquals(maze.getMazeMap().get(7).getConnectedRooms().size(),2);
     }
 
     @Test
