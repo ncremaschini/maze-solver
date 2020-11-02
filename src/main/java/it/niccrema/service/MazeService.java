@@ -105,14 +105,14 @@ public class MazeService {
                 
                 Room room = roomOpt.get();
 
-                while(!itemsToCollect.isEmpty() && !visitedRooms.containsAll(maze.getRooms()) && !room.getConnectedRoomsToVisit().isEmpty()){
+                while(!itemsToCollect.isEmpty() && !allRoomsAreVisited() && !room.getConnectedRoomsToVisit().isEmpty()){
                     Optional<Room> nextRoomToVisit = getNextNeighbourRoomToVisit(room);
                     if(nextRoomToVisit.isPresent()){
                         Room visitingRoom = nextRoomToVisit.get();
                         room.getConnectedRoomsToVisit().remove(visitingRoom);
                         visitRoom(visitingRoom, itemsToCollect);
                                  
-                        if(itemsToCollect.isEmpty() || visitedRooms.containsAll(maze.getRooms())){
+                        if(itemsToCollect.isEmpty() || allRoomsAreVisited()){
                             break;
                         }
     
@@ -131,6 +131,11 @@ public class MazeService {
 
         return route;
     }
+
+    private boolean allRoomsAreVisited() {
+        return visitedRooms.containsAll(maze.getRooms());
+    }
+
 
     public Maze getMaze() {
         return maze;

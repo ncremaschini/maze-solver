@@ -17,6 +17,7 @@ public class Room{
     private Integer west;
     private Integer east;
     private Map<Direction,Integer> directionsMap;
+    private boolean visited;
 
     @SerializedName(value = "objects")
     private Set<Item> items;
@@ -114,12 +115,18 @@ public class Room{
         return Objects.equals(id, room.id);
     }
 
+    public boolean isVisited() {
+        return visited;
+    }
+
+    public void setVisited(boolean visited) {
+        this.visited = visited;
+    }
+
     @Override
     public String toString() {
-        return "{" +
-            " id='" + getId() + "'" +
-            ", name='" + getName() + "'" +
-            ", items='" + getItems() + "'}";
+        return "Room [directionsMap=" + directionsMap + ", items=" + items + ", name=" + name + ", visited=" + visited
+                + "]";
     }
 
 }
