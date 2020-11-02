@@ -14,6 +14,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import com.google.gson.Gson;
+
+import it.niccrema.exceptions.RoomNotFoundException;
 import it.niccrema.model.Direction;
 import it.niccrema.model.Item;
 import it.niccrema.model.Maze;
@@ -46,6 +48,10 @@ public class MazeService {
         Route route = new Route();
         Queue<Room> roomsQueue = new LinkedList<Room>();
         Room startRoom = maze.getMazeMap().get(roomId);
+
+        if(startRoom == null){
+            throw new RoomNotFoundException(roomId);
+        }
 
         visitRoom(startRoom, itemsToCollect, route);
         roomsQueue.add(startRoom);

@@ -11,6 +11,7 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 
+import it.niccrema.exceptions.RoomNotFoundException;
 import it.niccrema.model.Item;
 import it.niccrema.model.Maze;
 import it.niccrema.model.Room;
@@ -47,6 +48,11 @@ public class MazeServiceMap1Test {
         assertEquals(maze.getMazeMap().get(2).getDirectionsMap().size(),3);
         assertEquals(maze.getMazeMap().get(3).getDirectionsMap().size(),1);
         assertEquals(maze.getMazeMap().get(4).getConnectedRooms().size(),1);
+    }
+
+    @Test(expected = RoomNotFoundException.class)
+    public void shouldThrowRoomNotFoundException() {
+        mazeService.findItems(99,new HashSet<>());
     }
 
     @Test
