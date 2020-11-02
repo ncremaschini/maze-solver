@@ -6,10 +6,11 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Queue;
 import java.util.Set;
-import java.util.Stack;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -23,11 +24,12 @@ import it.niccrema.model.Route;
 
 public class MazeService {
     Maze maze;
-    Route route = new Route();
-    Stack<Room> roomsStack  = new Stack<>();
-    Set<Room> visitedRooms = new HashSet<>();
-    
-    public MazeService(String mazeFilePath) throws IOException{
+    Route route;
+
+    Queue<Room> roomsQueue;
+    Set<Room> visitedRooms;
+
+    public MazeService(String mazeFilePath) throws IOException {
         try (Reader reader = Files.newBufferedReader(Paths.get(mazeFilePath));) {
             Gson gson = new Gson();
             maze = gson.fromJson(reader, Maze.class);
@@ -41,32 +43,29 @@ public class MazeService {
         }
     }
 
-    private void createMazeMap(){
-        if(maze.getMazeMap() == null){
+    private void createMazeMap() {
+        if (maze.getMazeMap() == null) {
             maze.getRooms().forEach(room -> maze.getMazeMap().put(room.getId(), room));
         }
     }
 
     private void calculateConnectedRooms(Room room) {
-        
-        Set<Room> connectedRooms = Stream.of(room.getNorth(),room.getSouth(),room.getWest(),room.getEast())
-                                    .filter(Objects::nonNull)
-                                    .map(roomId -> maze.getMazeMap().get(roomId))
-                                    .collect(Collectors.toCollection(HashSet::new));
-        room.setConnectedRooms(connectedRooms);
+
+        Set<Room> connectedRooms = Stream.of(room.getNorth(), room.getSouth(), room.getWest(), room.getEast())
+                .filter(Objects::nonNull).map(roomId -> maze.getMazeMap().get(roomId))
+                .collect(Collectors.toCollection(HashSet::new));
+        room.setConnectedRoomsToVisit(connectedRooms);
     }
 
-    private void calculateDirectionsMap(Room room){
-        room.getDirectionsMap().put(Direction.NORTH,room.getNorth());
-        room.getDirectionsMap().put(Direction.SOUTH,room.getSouth());
-        room.getDirectionsMap().put(Direction.WEST,room.getWest());
-        room.getDirectionsMap().put(Direction.EAST,room.getEast());
-
+    private void calculateDirectionsMap(Room room) {
+        room.getDirectionsMap().put(Direction.NORTH, room.getNorth());
+        room.getDirectionsMap().put(Direction.SOUTH, room.getSouth());
+        room.getDirectionsMap().put(Direction.WEST, room.getWest());
+        room.getDirectionsMap().put(Direction.EAST, room.getEast());
         room.getDirectionsMap().values().removeAll(Collections.singleton(null));
-        
     }
 
-    private Optional<Room> getNextRoomToVisit(Room currentRoom){
+    private Optional<Room> getNextNeighbourRoomToVisit(Room currentRoom) {
 
         Room nextRoom = null;
         for(Direction direction : Direction.values()){
@@ -83,39 +82,53 @@ public class MazeService {
         return Optional.ofNullable(nextRoom);
     }
 
-    public Route findItems(Integer startingRoomId, Set<Item> itemsToCollect){
-        Room visitingRoom;
+    private void visitRoom(Room room, Set<Item> itemsToCollect){
+        itemsToCollect.removeAll(room.getItems());
+        visitedRooms.add(room);
+        route.getSteps().add(room);
+    }
 
-        roomsStack.add(maze.getMazeMap().get(startingRoomId));
+    public Route findItems(Integer roomId, Set<Item> itemsToCollect) {
+        route = new Route();
+        Room startRoom = maze.getMazeMap().get(roomId);
 
-        while(!roomsStack.isEmpty() || itemsToCollect.isEmpty()){
-            visitingRoom = roomsStack.peek();
+        visitedRooms = new HashSet<Room>();
+        roomsQueue = new LinkedList<Room>();
         
-            route.getSteps().add(visitingRoom);
-            
-            itemsToCollect.removeAll(visitingRoom.getItems());
-            
-            if(itemsToCollect.isEmpty()){
-                break;
-            }else{
-                visitedRooms.add(visitingRoom);
-                visitingRoom.getConnectedRooms().removeAll(visitedRooms);
+        visitRoom(startRoom, itemsToCollect);
+        roomsQueue.add(startRoom);
+        
+        while ((!roomsQueue.isEmpty() && !itemsToCollect.isEmpty()) || !visitedRooms.containsAll(maze.getRooms())) {
+            Room room = roomsQueue.poll();
 
-                Optional<Room> nextRoomToVisit = getNextRoomToVisit(visitingRoom);
+            while(!itemsToCollect.isEmpty() && !visitedRooms.containsAll(maze.getRooms()) && !room.getConnectedRoomsToVisit().isEmpty()){
+                Optional<Room> nextRoomToVisit = getNextNeighbourRoomToVisit(room);
                 if(nextRoomToVisit.isPresent()){
-                    //go to the next room
-                    roomsStack.push(nextRoomToVisit.get());
-                }else{
-                    //no more connected rooms to visit, step back
-                    roomsStack.pop();
-                }
-            }
+                    Room visitingRoom = nextRoomToVisit.get();
+                    room.getConnectedRoomsToVisit().remove(visitingRoom);
+                    visitRoom(visitingRoom, itemsToCollect);
+                             
+                    if(itemsToCollect.isEmpty() || visitedRooms.containsAll(maze.getRooms())){
+                        break;
+                    }
+
+                    //current node has more neighbors, step back into it
+                    if(!room.getConnectedRoomsToVisit().isEmpty()){
+                        visitRoom(room, itemsToCollect);
+                        roomsQueue.add(room);
+                    }else{  
+                        //all neighbours visited, stay in the last neighbour
+                        roomsQueue.add(visitingRoom);         
+                    }
+                } 
+            }//neighbours visited
+            
         }
 
         return route;
     }
 
-    public Maze getMaze(){
+    public Maze getMaze() {
         return maze;
     }
 }
