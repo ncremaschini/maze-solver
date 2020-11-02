@@ -27,7 +27,6 @@ public class MazeService {
     Route route;
 
     Queue<Room> roomsQueue;
-    Set<Room> visitedRooms;
 
     public MazeService(String mazeFilePath) throws IOException {
         try (Reader reader = Files.newBufferedReader(Paths.get(mazeFilePath));) {
@@ -43,56 +42,14 @@ public class MazeService {
         }
     }
 
-    private void createMazeMap() {
-        if (maze.getMazeMap() == null) {
-            maze.getRooms().forEach(room -> maze.getMazeMap().put(room.getId(), room));
-        }
-    }
-
-    private void calculateConnectedRooms(Room room) {
-
-        Set<Room> connectedRooms = Stream.of(room.getNorth(), room.getSouth(), room.getWest(), room.getEast())
-                .filter(Objects::nonNull).map(roomId -> maze.getMazeMap().get(roomId))
-                .collect(Collectors.toCollection(HashSet::new));
-        room.setConnectedRoomsToVisit(connectedRooms);
-    }
-
-    private void calculateDirectionsMap(Room room) {
-        room.getDirectionsMap().put(Direction.NORTH, room.getNorth());
-        room.getDirectionsMap().put(Direction.SOUTH, room.getSouth());
-        room.getDirectionsMap().put(Direction.WEST, room.getWest());
-        room.getDirectionsMap().put(Direction.EAST, room.getEast());
-        room.getDirectionsMap().values().removeAll(Collections.singleton(null));
-    }
-
-    private Optional<Room> getNextNeighbourRoomToVisit(Room currentRoom) {
-
-        Room nextRoom = null;
-        for(Direction direction : Direction.values()){
-            Optional<Integer> idToCheck = Optional.ofNullable(currentRoom.getDirectionsMap().get(direction));
-            if(idToCheck.isPresent()){
-                Room roomToCheck = maze.getMazeMap().get(idToCheck.get());
-                if(!visitedRooms.contains(roomToCheck)){
-                    nextRoom = roomToCheck;
-                    break;
-                }
-            }
-        }
-        
-        return Optional.ofNullable(nextRoom);
-    }
-
-    private void visitRoom(Room room, Set<Item> itemsToCollect){
-        itemsToCollect.removeAll(room.getItems());
-        visitedRooms.add(room);
-        route.getSteps().add(room);
+    public Maze getMaze() {
+        return maze;
     }
 
     public Route findItems(Integer roomId, Set<Item> itemsToCollect) {
         route = new Route();
         Room startRoom = maze.getMazeMap().get(roomId);
 
-        visitedRooms = new HashSet<Room>();
         roomsQueue = new LinkedList<Room>();
         
         visitRoom(startRoom, itemsToCollect);
@@ -132,12 +89,52 @@ public class MazeService {
         return route;
     }
 
-    private boolean allRoomsAreVisited() {
-        return visitedRooms.containsAll(maze.getRooms());
+    private void createMazeMap() {
+        if (maze.getMazeMap() == null) {
+            maze.getRooms().forEach(room -> maze.getMazeMap().put(room.getId(), room));
+        }
     }
 
+    private void calculateConnectedRooms(Room room) {
 
-    public Maze getMaze() {
-        return maze;
+        Set<Room> connectedRooms = Stream.of(room.getNorth(), room.getSouth(), room.getWest(), room.getEast())
+                .filter(Objects::nonNull).map(roomId -> maze.getMazeMap().get(roomId))
+                .collect(Collectors.toCollection(HashSet::new));
+        room.setConnectedRoomsToVisit(connectedRooms);
+    }
+
+    private void calculateDirectionsMap(Room room) {
+        room.getDirectionsMap().put(Direction.NORTH, room.getNorth());
+        room.getDirectionsMap().put(Direction.SOUTH, room.getSouth());
+        room.getDirectionsMap().put(Direction.WEST, room.getWest());
+        room.getDirectionsMap().put(Direction.EAST, room.getEast());
+        room.getDirectionsMap().values().removeAll(Collections.singleton(null));
+    }
+
+    private Optional<Room> getNextNeighbourRoomToVisit(Room currentRoom) {
+
+        Room nextRoom = null;
+        for(Direction direction : Direction.values()){
+            Optional<Integer> idToCheck = Optional.ofNullable(currentRoom.getDirectionsMap().get(direction));
+            if(idToCheck.isPresent()){
+                Room roomToCheck = maze.getMazeMap().get(idToCheck.get());
+                if(!roomToCheck.isVisited()){
+                    nextRoom = roomToCheck;
+                    break;
+                }
+            }
+        }
+        
+        return Optional.ofNullable(nextRoom);
+    }
+
+    private void visitRoom(Room room, Set<Item> itemsToCollect){
+        itemsToCollect.removeAll(room.getItems());
+        room.setVisited(true);
+        route.getSteps().add(room);
+    }
+
+    private boolean allRoomsAreVisited() {
+        return maze.getRooms().stream().allMatch(room -> room.isVisited());
     }
 }
