@@ -98,31 +98,35 @@ public class MazeService {
         visitRoom(startRoom, itemsToCollect);
         roomsQueue.add(startRoom);
         
-        while ((!roomsQueue.isEmpty() && !itemsToCollect.isEmpty()) || !visitedRooms.containsAll(maze.getRooms())) {
-            Room room = roomsQueue.poll();
-
-            while(!itemsToCollect.isEmpty() && !visitedRooms.containsAll(maze.getRooms()) && !room.getConnectedRoomsToVisit().isEmpty()){
-                Optional<Room> nextRoomToVisit = getNextNeighbourRoomToVisit(room);
-                if(nextRoomToVisit.isPresent()){
-                    Room visitingRoom = nextRoomToVisit.get();
-                    room.getConnectedRoomsToVisit().remove(visitingRoom);
-                    visitRoom(visitingRoom, itemsToCollect);
-                             
-                    if(itemsToCollect.isEmpty() || visitedRooms.containsAll(maze.getRooms())){
-                        break;
-                    }
-
-                    //current node has more neighbors, step back into it
-                    if(!room.getConnectedRoomsToVisit().isEmpty()){
-                        visitRoom(room, itemsToCollect);
-                        roomsQueue.add(room);
-                    }else{  
-                        //all neighbours visited, stay in the last neighbour
-                        roomsQueue.add(visitingRoom);         
-                    }
-                } 
-            }//neighbours visited
+        while ((!roomsQueue.isEmpty() && !itemsToCollect.isEmpty())) {
+            Optional<Room> roomOpt = Optional.ofNullable(roomsQueue.poll());
             
+            if(roomOpt.isPresent()){
+                
+                Room room = roomOpt.get();
+
+                while(!itemsToCollect.isEmpty() && !visitedRooms.containsAll(maze.getRooms()) && !room.getConnectedRoomsToVisit().isEmpty()){
+                    Optional<Room> nextRoomToVisit = getNextNeighbourRoomToVisit(room);
+                    if(nextRoomToVisit.isPresent()){
+                        Room visitingRoom = nextRoomToVisit.get();
+                        room.getConnectedRoomsToVisit().remove(visitingRoom);
+                        visitRoom(visitingRoom, itemsToCollect);
+                                 
+                        if(itemsToCollect.isEmpty() || visitedRooms.containsAll(maze.getRooms())){
+                            break;
+                        }
+    
+                        //current node has more neighbors, step back into it
+                        if(!room.getConnectedRoomsToVisit().isEmpty()){
+                            visitRoom(room, itemsToCollect);
+                            roomsQueue.add(room);
+                        }else{  
+                            //all neighbours visited, stay in the last neighbour
+                            roomsQueue.add(visitingRoom);         
+                        }
+                    } 
+                }//neighbours visited
+            }
         }
 
         return route;

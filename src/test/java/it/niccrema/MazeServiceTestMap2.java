@@ -94,4 +94,27 @@ public class MazeServiceTestMap2 {
         
         assertEquals(rightRoute, route);
     }
+
+    @Test
+    public void shouldFindAllItemsExceptOne(){
+        Set<Item> itemsToCollect = new HashSet<>();
+        itemsToCollect.add(new Item("Knife"));
+        itemsToCollect.add(new Item("Potted Plant"));
+        itemsToCollect.add(new Item("rifle"));
+
+        mazeService.findItems(2,itemsToCollect);
+        
+        assertEquals(itemsToCollect.size(),1);
+    }
+
+    @Test
+    public void shouldNotFindItems(){
+        Set<Item> itemsToCollect = new HashSet<>();
+        itemsToCollect.add(new Item("rifle"));
+        itemsToCollect.add(new Item("garter"));
+        
+        mazeService.findItems(2, itemsToCollect);
+    
+        assertEquals(itemsToCollect.size(),2);
+    }
 }

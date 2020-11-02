@@ -50,6 +50,17 @@ public class MazeServiceTestMap1 {
     }
 
     @Test
+    public void shouldFindItemsInFirtsRoom(){
+        Set<Item> itemsToCollect = new HashSet<>();
+        itemsToCollect.add(new Item("Knife"));
+        
+        Route route = mazeService.findItems(3,itemsToCollect);
+
+        assertTrue(itemsToCollect.isEmpty());
+        assertEquals(route.getSteps().size(), 1);
+    }
+
+    @Test
     public void shouldFindAllItemsUsingExpectedRoute(){
         Set<Item> itemsToCollect = new HashSet<>();
         itemsToCollect.add(new Item("Knife"));
