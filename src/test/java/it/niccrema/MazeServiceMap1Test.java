@@ -17,14 +17,14 @@ import it.niccrema.model.Room;
 import it.niccrema.model.Route;
 import it.niccrema.service.MazeService;
 
-public class MazeServiceTestMap2 {
+public class MazeServiceMap1Test {
 
-    private Maze maze;
-    private MazeService mazeService;
+    private static Maze maze;
+    private static MazeService mazeService;
 
     @Before
     public void loadMap() throws IOException {
-        mazeService = new MazeService("src/test/resources/map2.json"); 
+        mazeService = new MazeService("src/test/resources/map1.json"); 
         maze = mazeService.getMaze();  
     }
 
@@ -35,24 +35,18 @@ public class MazeServiceTestMap2 {
 
     @Test
     public void shouldCalculateConnectedRooms(){
-        assertEquals(maze.getMazeMap().get(1).getConnectedRooms().size(),2);
-        assertEquals(maze.getMazeMap().get(2).getConnectedRooms().size(),4);
+        assertEquals(maze.getMazeMap().get(1).getConnectedRooms().size(),1);
+        assertEquals(maze.getMazeMap().get(2).getConnectedRooms().size(),3);
         assertEquals(maze.getMazeMap().get(3).getConnectedRooms().size(),1);
-        assertEquals(maze.getMazeMap().get(4).getConnectedRooms().size(),3);
-        assertEquals(maze.getMazeMap().get(5).getConnectedRooms().size(),2);
-        assertEquals(maze.getMazeMap().get(6).getConnectedRooms().size(),2);
-        assertEquals(maze.getMazeMap().get(7).getConnectedRooms().size(),2);
+        assertEquals(maze.getMazeMap().get(4).getConnectedRooms().size(),1);
     }
 
     @Test
     public void shouldCalculateDirectionsMap(){
-        assertEquals(maze.getMazeMap().get(1).getConnectedRooms().size(),2);
-        assertEquals(maze.getMazeMap().get(2).getConnectedRooms().size(),4);
-        assertEquals(maze.getMazeMap().get(3).getConnectedRooms().size(),1);
-        assertEquals(maze.getMazeMap().get(4).getConnectedRooms().size(),3);
-        assertEquals(maze.getMazeMap().get(5).getConnectedRooms().size(),2);
-        assertEquals(maze.getMazeMap().get(6).getConnectedRooms().size(),2);
-        assertEquals(maze.getMazeMap().get(7).getConnectedRooms().size(),2);
+        assertEquals(maze.getMazeMap().get(1).getDirectionsMap().size(),1);
+        assertEquals(maze.getMazeMap().get(2).getDirectionsMap().size(),3);
+        assertEquals(maze.getMazeMap().get(3).getDirectionsMap().size(),1);
+        assertEquals(maze.getMazeMap().get(4).getConnectedRooms().size(),1);
     }
 
     @Test
@@ -71,28 +65,30 @@ public class MazeServiceTestMap2 {
         Set<Item> itemsToCollect = new HashSet<>();
         itemsToCollect.add(new Item("Knife"));
         itemsToCollect.add(new Item("Potted Plant"));
-        itemsToCollect.add(new Item("Pillow"));
         
         Route rightRoute = new Route();
-        rightRoute.getSteps().add(new Room(4));
-        rightRoute.getSteps().add(new Room(6));
-        rightRoute.getSteps().add(new Room(4));
-        rightRoute.getSteps().add(new Room(7));
-        rightRoute.getSteps().add(new Room(4));
-        rightRoute.getSteps().add(new Room(2));
-        rightRoute.getSteps().add(new Room(5));
         rightRoute.getSteps().add(new Room(2));
         rightRoute.getSteps().add(new Room(1));
         rightRoute.getSteps().add(new Room(2));
         rightRoute.getSteps().add(new Room(3));
+        rightRoute.getSteps().add(new Room(2));
+        rightRoute.getSteps().add(new Room(4));
         
-        Route route = mazeService.findItems(4,itemsToCollect);
-        
-        route.getSteps().forEach(step -> System.out.println(step.getId() + " - " + step.getName() + " - " + step.getItems()));
-        
+        Route route = mazeService.findItems(2,itemsToCollect);
         assertTrue(itemsToCollect.isEmpty());
         
         assertEquals(rightRoute, route);
+    }
+
+    @Test
+    public void shouldFindAllItemsInFiveSteps(){
+        Set<Item> itemsToCollect = new HashSet<>();
+        itemsToCollect.add(new Item("Knife"));
+        itemsToCollect.add(new Item("Potted Plant"));
+            
+        Route route = mazeService.findItems(1, itemsToCollect);
+        assertTrue(itemsToCollect.isEmpty());
+        assertEquals(route.getSteps().size(), 5);
     }
 
     @Test
@@ -117,4 +113,5 @@ public class MazeServiceTestMap2 {
     
         assertEquals(itemsToCollect.size(),2);
     }
+
 }

@@ -13,9 +13,7 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import com.google.gson.Gson;
-
 import it.niccrema.model.Direction;
 import it.niccrema.model.Item;
 import it.niccrema.model.Maze;
@@ -56,6 +54,7 @@ public class MazeService {
             Room room = roomsQueue.poll();
             
             while(!itemsToCollect.isEmpty() && !allRoomsAreVisited() && !allNeighboursAreVisited(room)){
+                //get next neighbour to visit, according to N - S - W - E precedence order
                 Optional<Room> nextRoomToVisit = getNextNeighbourRoomToVisit(room);
                 
                 if(nextRoomToVisit.isPresent()){
@@ -72,12 +71,11 @@ public class MazeService {
                         visitRoom(room, itemsToCollect, route);
                         roomsQueue.add(room);
                     }else{  
-                        //all neighbours visited, stay in the last neighbour
+                        //all neighbours visited, just stay in the last neighbour
                         roomsQueue.add(visitingRoom);         
                     }
                 } 
             }//neighbours visited
-            
         }
 
         return route;
