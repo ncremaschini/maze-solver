@@ -23,6 +23,7 @@ import it.niccrema.model.Room;
 import it.niccrema.model.Route;
 
 public class MazeService {
+    
     Maze maze;
 
     public MazeService(String mazeFilePath) throws IOException {
@@ -60,11 +61,13 @@ public class MazeService {
                 
                 Room room = roomOpt.get();
 
-                while(!itemsToCollect.isEmpty() && !allRoomsAreVisited() && !room.getConnectedRoomsToVisit().isEmpty()){
+                while(!itemsToCollect.isEmpty() && !allRoomsAreVisited() && !allNieghboursAreVisited(room)){
                     Optional<Room> nextRoomToVisit = getNextNeighbourRoomToVisit(room);
+                    
                     if(nextRoomToVisit.isPresent()){
                         Room visitingRoom = nextRoomToVisit.get();
                         room.getConnectedRoomsToVisit().remove(visitingRoom);
+
                         visitRoom(visitingRoom, itemsToCollect, route);
                                  
                         if(itemsToCollect.isEmpty() || allRoomsAreVisited()){
@@ -72,7 +75,7 @@ public class MazeService {
                         }
     
                         //current node has more neighbors, step back into it
-                        if(!room.getConnectedRoomsToVisit().isEmpty()){
+                        if(!allNieghboursAreVisited(room)){
                             visitRoom(room, itemsToCollect, route);
                             roomsQueue.add(room);
                         }else{  
@@ -134,5 +137,9 @@ public class MazeService {
 
     private boolean allRoomsAreVisited() {
         return maze.getRooms().stream().allMatch(room -> room.isVisited());
+    }
+
+    private boolean allNieghboursAreVisited(Room room) {
+        return room.getConnectedRoomsToVisit().isEmpty();
     }
 }
