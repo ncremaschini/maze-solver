@@ -50,7 +50,14 @@
       "name": "Bathroom",
       "west": 5,
       "south": 4,
-      "objects": []
+      "objects": [
+        {
+          "name": "Toothbrush"
+        },
+        {
+          "name": "Soap"
+        }
+      ]
     },
     {
       "id": 7,
@@ -60,6 +67,9 @@
       "objects": [
         {
           "name": "Potted Plant"
+        },
+        {
+          "name": "Book"
         }
       ]
     }
