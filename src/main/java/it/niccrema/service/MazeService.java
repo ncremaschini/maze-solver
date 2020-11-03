@@ -21,6 +21,7 @@ import it.niccrema.model.Item;
 import it.niccrema.model.Maze;
 import it.niccrema.model.Room;
 import it.niccrema.model.Route;
+import it.niccrema.model.Step;
 
 public class MazeService {
     
@@ -127,9 +128,16 @@ public class MazeService {
     }
 
     private void visitRoom(Room room, Set<Item> itemsToCollect, Route route){
-        itemsToCollect.removeAll(room.getItems());
+        Step step = new Step(room);
+        
+        Set<Item> collectedItems = new HashSet<>(room.getItems());
+        //keep only required items
+        collectedItems.retainAll(itemsToCollect);
+        itemsToCollect.removeAll(collectedItems);
+        step.setCollectedItems(collectedItems);
+
         room.setVisited(true);
-        route.getSteps().add(room);
+        route.getSteps().add(step);
     }
 
     private boolean allRoomsAreVisited() {

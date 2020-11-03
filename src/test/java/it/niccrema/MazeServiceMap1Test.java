@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -17,6 +16,7 @@ import it.niccrema.model.Item;
 import it.niccrema.model.Maze;
 import it.niccrema.model.Room;
 import it.niccrema.model.Route;
+import it.niccrema.model.Step;
 import it.niccrema.service.MazeService;
 
 public class MazeServiceMap1Test {
@@ -74,12 +74,12 @@ public class MazeServiceMap1Test {
         itemsToCollect.add(new Item("Potted Plant"));
 
         Route rightRoute = new Route();
-        rightRoute.getSteps().add(new Room(2));
-        rightRoute.getSteps().add(new Room(1));
-        rightRoute.getSteps().add(new Room(2));
-        rightRoute.getSteps().add(new Room(3));
-        rightRoute.getSteps().add(new Room(2));
-        rightRoute.getSteps().add(new Room(4));
+        rightRoute.getSteps().add(new Step(new Room(2)));
+        rightRoute.getSteps().add(new Step(new Room(1)));
+        rightRoute.getSteps().add(new Step(new Room(2)));
+        rightRoute.getSteps().add(new Step(new Room(3)));
+        rightRoute.getSteps().add(new Step(new Room(2)));
+        rightRoute.getSteps().add(new Step(new Room(4)));
 
         Route route = mazeService.findItems(2, itemsToCollect);
         assertTrue(itemsToCollect.isEmpty());
@@ -130,10 +130,9 @@ public class MazeServiceMap1Test {
 
         Set<Item> collectedItems = new HashSet<>();
 
-        route.getSteps().forEach(step -> collectedItems.addAll(step.getItems()));
+        route.getSteps().forEach(step -> collectedItems.addAll(step.getCollectedItems()));
 
         assertEquals(collectedItems.size(),1);
 
-        
     }
 }

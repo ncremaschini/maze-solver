@@ -16,6 +16,7 @@ import it.niccrema.model.Item;
 import it.niccrema.model.Maze;
 import it.niccrema.model.Room;
 import it.niccrema.model.Route;
+import it.niccrema.model.Step;
 import it.niccrema.service.MazeService;
 
 public class MazeServiceMap2Test {
@@ -80,17 +81,17 @@ public class MazeServiceMap2Test {
         itemsToCollect.add(new Item("Pillow"));
         
         Route rightRoute = new Route();
-        rightRoute.getSteps().add(new Room(4));
-        rightRoute.getSteps().add(new Room(6));
-        rightRoute.getSteps().add(new Room(4));
-        rightRoute.getSteps().add(new Room(7));
-        rightRoute.getSteps().add(new Room(4));
-        rightRoute.getSteps().add(new Room(2));
-        rightRoute.getSteps().add(new Room(5));
-        rightRoute.getSteps().add(new Room(2));
-        rightRoute.getSteps().add(new Room(1));
-        rightRoute.getSteps().add(new Room(2));
-        rightRoute.getSteps().add(new Room(3));
+        rightRoute.getSteps().add(new Step(new Room(4)));
+        rightRoute.getSteps().add(new Step(new Room(6)));
+        rightRoute.getSteps().add(new Step(new Room(4)));
+        rightRoute.getSteps().add(new Step(new Room(7)));
+        rightRoute.getSteps().add(new Step(new Room(4)));
+        rightRoute.getSteps().add(new Step(new Room(2)));
+        rightRoute.getSteps().add(new Step(new Room(5)));
+        rightRoute.getSteps().add(new Step(new Room(2)));
+        rightRoute.getSteps().add(new Step(new Room(1)));
+        rightRoute.getSteps().add(new Step(new Room(2)));
+        rightRoute.getSteps().add(new Step(new Room(3)));
         
         Route route = mazeService.findItems(4,itemsToCollect);    
         
@@ -119,5 +120,22 @@ public class MazeServiceMap2Test {
         mazeService.findItems(2, itemsToCollect);
     
         assertEquals(itemsToCollect.size(),2);
+    }
+
+    @Test
+    public void shouldPickUpOnlyRequiredItems() {
+        Set<Item> itemsToCollect = new HashSet<>();
+        itemsToCollect.add(new Item("Knife"));
+        itemsToCollect.add(new Item("Potted Plant"));
+        itemsToCollect.add(new Item("Pillow"));
+
+        Route route = mazeService.findItems(2, itemsToCollect);
+
+        Set<Item> collectedItems = new HashSet<>();
+
+        route.getSteps().forEach(step -> collectedItems.addAll(step.getCollectedItems()));
+
+        assertEquals(collectedItems.size(),3);
+
     }
 }

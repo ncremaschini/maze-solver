@@ -4,17 +4,17 @@ import java.util.Objects;
 
 public class Route{
     
-    private LinkedList<Room> steps;
+    private LinkedList<Step> steps;
 
     public Route(){
         this.steps = new LinkedList<>();
     }
 
-    public LinkedList<Room> getSteps() {
+    public LinkedList<Step> getSteps() {
         return this.steps;
     }
 
-    public void setSteps(LinkedList<Room> steps) {
+    public void setSteps(LinkedList<Step> steps) {
         this.steps = steps;
     }
 
