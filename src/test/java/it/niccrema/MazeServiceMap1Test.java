@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -25,8 +26,8 @@ public class MazeServiceMap1Test {
 
     @Before
     public void loadMap() throws IOException {
-        mazeService = new MazeService("src/test/resources/map1.json"); 
-        maze = mazeService.getMaze();  
+        mazeService = new MazeService("src/test/resources/map1.json");
+        maze = mazeService.getMaze();
     }
 
     @Test
@@ -35,43 +36,43 @@ public class MazeServiceMap1Test {
     }
 
     @Test
-    public void shouldCalculateConnectedRooms(){
-        assertEquals(maze.getMazeMap().get(1).getConnectedRooms().size(),1);
-        assertEquals(maze.getMazeMap().get(2).getConnectedRooms().size(),3);
-        assertEquals(maze.getMazeMap().get(3).getConnectedRooms().size(),1);
-        assertEquals(maze.getMazeMap().get(4).getConnectedRooms().size(),1);
+    public void shouldCalculateConnectedRooms() {
+        assertEquals(maze.getMazeMap().get(1).getConnectedRooms().size(), 1);
+        assertEquals(maze.getMazeMap().get(2).getConnectedRooms().size(), 3);
+        assertEquals(maze.getMazeMap().get(3).getConnectedRooms().size(), 1);
+        assertEquals(maze.getMazeMap().get(4).getConnectedRooms().size(), 1);
     }
 
     @Test
-    public void shouldCalculateDirectionsMap(){
-        assertEquals(maze.getMazeMap().get(1).getDirectionsMap().size(),1);
-        assertEquals(maze.getMazeMap().get(2).getDirectionsMap().size(),3);
-        assertEquals(maze.getMazeMap().get(3).getDirectionsMap().size(),1);
-        assertEquals(maze.getMazeMap().get(4).getConnectedRooms().size(),1);
+    public void shouldCalculateDirectionsMap() {
+        assertEquals(maze.getMazeMap().get(1).getDirectionsMap().size(), 1);
+        assertEquals(maze.getMazeMap().get(2).getDirectionsMap().size(), 3);
+        assertEquals(maze.getMazeMap().get(3).getDirectionsMap().size(), 1);
+        assertEquals(maze.getMazeMap().get(4).getConnectedRooms().size(), 1);
     }
 
     @Test(expected = RoomNotFoundException.class)
     public void shouldThrowRoomNotFoundException() {
-        mazeService.findItems(99,new HashSet<>());
+        mazeService.findItems(99, new HashSet<>());
     }
 
     @Test
-    public void shouldFindItemsInFirtsRoom(){
+    public void shouldFindItemsInFirtsRoom() {
         Set<Item> itemsToCollect = new HashSet<>();
         itemsToCollect.add(new Item("Knife"));
-        
-        Route route = mazeService.findItems(3,itemsToCollect);
+
+        Route route = mazeService.findItems(3, itemsToCollect);
 
         assertTrue(itemsToCollect.isEmpty());
         assertEquals(route.getSteps().size(), 1);
     }
 
     @Test
-    public void shouldFindAllItemsUsingExpectedRoute(){
+    public void shouldFindAllItemsUsingExpectedRoute() {
         Set<Item> itemsToCollect = new HashSet<>();
         itemsToCollect.add(new Item("Knife"));
         itemsToCollect.add(new Item("Potted Plant"));
-        
+
         Route rightRoute = new Route();
         rightRoute.getSteps().add(new Room(2));
         rightRoute.getSteps().add(new Room(1));
@@ -79,45 +80,60 @@ public class MazeServiceMap1Test {
         rightRoute.getSteps().add(new Room(3));
         rightRoute.getSteps().add(new Room(2));
         rightRoute.getSteps().add(new Room(4));
-        
-        Route route = mazeService.findItems(2,itemsToCollect);
+
+        Route route = mazeService.findItems(2, itemsToCollect);
         assertTrue(itemsToCollect.isEmpty());
-        
+
         assertEquals(rightRoute, route);
     }
 
     @Test
-    public void shouldFindAllItemsInFiveSteps(){
+    public void shouldFindAllItemsInFiveSteps() {
         Set<Item> itemsToCollect = new HashSet<>();
         itemsToCollect.add(new Item("Knife"));
         itemsToCollect.add(new Item("Potted Plant"));
-            
+
         Route route = mazeService.findItems(1, itemsToCollect);
         assertTrue(itemsToCollect.isEmpty());
         assertEquals(route.getSteps().size(), 5);
     }
 
     @Test
-    public void shouldFindAllItemsExceptOne(){
+    public void shouldFindAllItemsExceptOne() {
         Set<Item> itemsToCollect = new HashSet<>();
         itemsToCollect.add(new Item("Knife"));
         itemsToCollect.add(new Item("Potted Plant"));
         itemsToCollect.add(new Item("rifle"));
 
-        mazeService.findItems(2,itemsToCollect);
-        
-        assertEquals(itemsToCollect.size(),1);
+        mazeService.findItems(2, itemsToCollect);
+
+        assertEquals(itemsToCollect.size(), 1);
     }
 
     @Test
-    public void shouldNotFindItems(){
+    public void shouldNotFindItems() {
         Set<Item> itemsToCollect = new HashSet<>();
         itemsToCollect.add(new Item("rifle"));
         itemsToCollect.add(new Item("garter"));
-        
+
         mazeService.findItems(2, itemsToCollect);
-    
-        assertEquals(itemsToCollect.size(),2);
+
+        assertEquals(itemsToCollect.size(), 2);
     }
 
+    @Test
+    public void shouldPickUpOnlyRequiredItems() {
+        Set<Item> itemsToCollect = new HashSet<>();
+        itemsToCollect.add(new Item("Knife"));
+
+        Route route = mazeService.findItems(2, itemsToCollect);
+
+        Set<Item> collectedItems = new HashSet<>();
+
+        route.getSteps().forEach(step -> collectedItems.addAll(step.getItems()));
+
+        assertEquals(collectedItems.size(),1);
+
+        
+    }
 }
