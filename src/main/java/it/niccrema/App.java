@@ -27,7 +27,7 @@ public final class App {
 
             CommandLineParserService commandLineParserService = optCommandLineParserService.get();
         
-            MazeService mazeService = new MazeService(commandLineParserService.getMapFileName());
+            MazeService mazeService = new MazeService(commandLineParserService.getMapFilePath());
         
             Set<Item> itemsToCollect = Arrays.asList(commandLineParserService.getItemsToCollect())
                                             .stream()
@@ -35,9 +35,9 @@ public final class App {
                                             .collect(Collectors.toSet());
             
             Route route = mazeService.findItems(commandLineParserService.getStartingRoomId(), itemsToCollect);
-
+            route.print();
         } catch (RoomNotFoundException | IOException e) {
-            System.err.println(e.getMessage());
+            System.err.println(e);
         }
     }
 }

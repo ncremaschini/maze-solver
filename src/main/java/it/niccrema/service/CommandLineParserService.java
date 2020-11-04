@@ -18,8 +18,8 @@ public class CommandLineParserService {
                                                 .longOpt("map")
                                                 .hasArg()
                                                 .required()
-                                                .argName("mapFileName")
-                                                .desc("Map json file name. Files are searched in map folder")
+                                                .argName("mapFilePath")
+                                                .desc("Map json file path")
                                                 .type(String.class)
                                                 .build();
 
@@ -36,20 +36,20 @@ public class CommandLineParserService {
                                             .longOpt("items")
                                             .hasArgs()
                                             .required()
-                                            .valueSeparator(' ')
+                                            .valueSeparator(',')
                                             .argName("itemsList")
                                             .desc("List of items to collect")
                                             .numberOfArgs(Option.UNLIMITED_VALUES)
                                             .build();
 
-    private final String mapFileName;
+    private final String mapFilePath;
     private final Integer startingRoomId;
     private final String[] itemsToCollect;
 
     private CommandLineParserService(Options options, String[] args) throws ParseException {
     
         CommandLine cli = new DefaultParser().parse(options, args);
-        mapFileName = (String) cli.getParsedOptionValue(OPT_MAP_FILE.getOpt());
+        mapFilePath = (String) cli.getParsedOptionValue(OPT_MAP_FILE.getOpt());
         startingRoomId = ((Number) cli.getParsedOptionValue(OPT_START_ROOM.getOpt())).intValue();
         itemsToCollect = cli.getOptionValues(OPT_ITEMS.getOpt());
     }
@@ -68,8 +68,8 @@ public class CommandLineParserService {
         return Optional.ofNullable(commandLineParserService);
     }
 
-    public String getMapFileName() {
-        return mapFileName;
+    public String getMapFilePath() {
+        return mapFilePath;
     }
 
     public Integer getStartingRoomId() {

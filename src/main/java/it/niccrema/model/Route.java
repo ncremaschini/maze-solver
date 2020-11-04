@@ -1,6 +1,9 @@
 package it.niccrema.model;
+
+import java.io.PrintStream;
 import java.util.LinkedList;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class Route{
     
@@ -16,6 +19,23 @@ public class Route{
 
     public void setSteps(LinkedList<Step> steps) {
         this.steps = steps;
+    }
+
+    public void print() {
+        int separatorLineLength = 37;
+        StringBuffer separatorLineBuffer = new StringBuffer(separatorLineLength);
+        
+        for (int i = 0; i < separatorLineLength; i++){
+            separatorLineBuffer.append("-");
+        }
+        
+        System.out.printf("\n%-3s %-16s %-50s\n", "ID", "Room", "Object collected");
+        System.out.println(separatorLineBuffer.toString());
+
+        steps.stream().forEach(move -> {
+            String items = String.join(",", move.getCollectedItems().stream().map(Item::getName).collect(Collectors.toList()));
+            System.out.printf("%-3d %-16s %-50s\n", move.getRoom().getId(), move.getRoom().getName(), items.isEmpty() ? "None" : items);
+        });   
     }
 
     @Override
