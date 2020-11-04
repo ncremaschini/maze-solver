@@ -1,5 +1,4 @@
-# maze-solver
-==================
+# A-Maze-ingly Retro Route Puzzle
 
 Requisites:
 -------
@@ -8,7 +7,10 @@ Docker is a mandatory technology to master. Each artifact must
 1. contains a Dockerfile into the root directory
 2. the full directory will be mounted under /mnt/ folder into the docker image builded from your docker file
 3. if the implementation is for a network accessible service it must be binded to the port :9090
-4. contains a build script runnable within the docker container generated from the Docker file named scripts/build.sh 5. contains a test script runnable within the docker container generated from the Docker file named scripts/test.sh 6. contains a run script runnable within the docker container generated from the Docker file named scripts/run.sh
+4. contains a build script runnable within the docker container generated from the Docker file named scripts/build.sh 
+5. contains a test script runnable within the docker container generated from the Docker file named scripts/test.sh 
+6. contains a run script runnable within the docker container generated from the Docker file named scripts/run.sh
+
 The candidate can simulate the review process with these commands, that must be run from the root of the project folder:
 
 ```
