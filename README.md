@@ -11,6 +11,17 @@ Docker is a mandatory technology to master. Each artifact must
 4. contains a build script runnable within the docker container generated from the Docker file named scripts/build.sh 5. contains a test script runnable within the docker container generated from the Docker file named scripts/test.sh 6. contains a run script runnable within the docker container generated from the Docker file named scripts/run.sh
 The candidate can simulate the review process with these commands, that must be run from the root of the project folder:
 
+```
+docker build -t mytest .
+docker run -v $(pwd):/mnt -p 9090:9090 -w /mnt mytest ./scripts/build.sh
+docker run -v $(pwd):/mnt -p 9090:9090 -w /mnt mytest ./scripts/test.sh
+```
+
+To run:
+```
+docker run -v $(pwd):/mnt -p 9090:9090 -w /mnt mytest ./scripts/run.sh -m maps/map1.json -r 2 -i "Knife" "Potted Plant"
+docker run -v $(pwd):/mnt -p 9090:9090 -w /mnt mytest ./scripts/run.sh -m maps/map2.json -r 4 -i "Knife" "Potted Plant" "Pillow"
+```
 
 Problem:
 -------
@@ -23,29 +34,6 @@ Exercise starts with an input of:
   - starting room
   - list of object to collect
 
-Commands:
-------------------
-
-To build the docker image:
-```
-docker build -t mytest .
-```
-
-To build code:
-```
-docker run -v $(pwd):/mnt -p 9090:9090 -w /mnt mytest ./scripts/build.sh
-```
-
-To run tests:
-```
-docker run -v $(pwd):/mnt -p 9090:9090 -w /mnt mytest ./scripts/test.sh
-```
-
-To run:
-```
-docker run -v $(pwd):/mnt -p 9090:9090 -w /mnt mytest ./scripts/run.sh -m maps/map1.json -r 2 -i "Knife" "Potted Plant"
-docker run -v $(pwd):/mnt -p 9090:9090 -w /mnt mytest ./scripts/run.sh -m maps/map2.json -r 4 -i "Knife" "Potted Plant" "Pillow"
-```
   
 ```
 Room type allowed fields
@@ -136,35 +124,5 @@ Output
 
 Goals
 ----------------
-  - [x] TDD approach.
-  - [x] Build a Docker container with runnable code inside so that we can mount a volume in it and test on different maps.
-
-Build instructions
-------------------
-
-To build the docker image:
-```
-docker build -t rrp .
-```
-
-To build code:
-```
-docker run -v $(pwd):/mnt -p 9090:9090 -w /mnt rrp ./scripts/build.sh
-```
-
-To run tests:
-```
-docker run -v $(pwd):/mnt -p 9090:9090 -w /mnt rrp ./scripts/test.sh
-```
-
-To run:
-```
-docker run -v $(pwd):/mnt -p 9090:9090 -w /mnt rrp ./scripts/run.sh -m maps/map01.json -r 2 -i "Knife" "Potted Plant"
-docker run -v $(pwd):/mnt -p 9090:9090 -w /mnt rrp ./scripts/run.sh -m maps/map02.json -r 4 -i "Knife" "Potted Plant" "Pillow"
-```
-
-
-'''
-./scripts/run.sh -m "/path/to/maps/map1.json" -r "2" -i "Knife","Potted Plant"
-
-'''
+  - TDD approach.
+  - Build a Docker container with runnable code inside so that we can mount a volume in it and test on different maps.
