@@ -55,7 +55,9 @@ public class CommandLineParserService {
     public static Optional<CommandLineParserService> parse(String[] args) {
         Options options = new Options();
         Stream.of(OPT_MAP_FILE, OPT_START_ROOM, OPT_ITEMS).forEach(options::addOption);
+        
         CommandLineParserService commandLineParserService = null;
+        
         try {
             commandLineParserService = new CommandLineParserService(options, args);
         } catch (ParseException e) {

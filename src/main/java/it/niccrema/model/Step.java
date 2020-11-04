@@ -7,6 +7,10 @@ public class Step {
     private Room room;
     private Set<Item> collectedItems;
 
+    public Step(Integer roomId){
+        this(new Room(roomId));
+    }
+
     public Step(Room room){
         this.room = room;
     }

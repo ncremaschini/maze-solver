@@ -14,7 +14,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import com.google.gson.Gson;
-
 import it.niccrema.exceptions.RoomNotFoundException;
 import it.niccrema.model.Direction;
 import it.niccrema.model.Item;
@@ -29,12 +28,10 @@ public class MazeService {
 
     public MazeService(String mazeFilePath) throws IOException {
         try (Reader reader = Files.newBufferedReader(Paths.get(mazeFilePath));) {
-            Gson gson = new Gson();
-            maze = gson.fromJson(reader, Maze.class);
-
+            
+            loadMap(reader);
             createMazeMap();
-            maze.getRooms().forEach(room -> calculateConnectedRooms(room));
-            maze.getRooms().forEach(room -> calculateDirectionsMap(room));
+            calculateRoomsNeighbours();
 
         } catch (IOException ex) {
             throw ex;
@@ -88,17 +85,28 @@ public class MazeService {
         return route;
     }
 
+    private void loadMap(Reader reader) {
+        Gson gson = new Gson();
+        maze = gson.fromJson(reader, Maze.class);
+    }
+
     private void createMazeMap() {
         if (maze.getMazeMap() == null) {
             maze.getRooms().forEach(room -> maze.getMazeMap().put(room.getId(), room));
         }
     }
 
+    private void calculateRoomsNeighbours() {
+        maze.getRooms().forEach(room -> calculateConnectedRooms(room));
+        maze.getRooms().forEach(room -> calculateDirectionsMap(room));
+    }
+
     private void calculateConnectedRooms(Room room) {
 
         Set<Room> connectedRooms = Stream.of(room.getNorth(), room.getSouth(), room.getWest(), room.getEast())
-                .filter(Objects::nonNull).map(roomId -> maze.getMazeMap().get(roomId))
-                .collect(Collectors.toCollection(HashSet::new));
+                                    .filter(Objects::nonNull)
+                                    .map(roomId -> maze.getMazeMap().get(roomId))
+                                    .collect(Collectors.toCollection(HashSet::new));
         room.setConnectedRooms(connectedRooms);
     }
 
@@ -113,6 +121,7 @@ public class MazeService {
     private Optional<Room> getNextNeighbourRoomToVisit(Room currentRoom) {
 
         Room nextRoom = null;
+
         for(Direction direction : Direction.values()){
             Optional<Integer> idToCheck = Optional.ofNullable(currentRoom.getDirectionsMap().get(direction));
             if(idToCheck.isPresent()){
@@ -129,9 +138,8 @@ public class MazeService {
 
     private void visitRoom(Room room, Set<Item> itemsToCollect, Route route){
         Step step = new Step(room);
-        
         Set<Item> collectedItems = new HashSet<>(room.getItems());
-        //keep only required items
+
         collectedItems.retainAll(itemsToCollect);
         itemsToCollect.removeAll(collectedItems);
         step.setCollectedItems(collectedItems);
