@@ -2,10 +2,10 @@ package it.niccrema;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import it.niccrema.exceptions.RoomNotFoundException;
 import it.niccrema.model.Item;
@@ -33,7 +33,7 @@ public final class App {
                                             .stream()
                                             .map(Item::new)
                                             .collect(Collectors.toSet());
-            
+    
             Route route = mazeService.findItems(commandLineParserService.getStartingRoomId(), itemsToCollect);
             route.print();
         } catch (RoomNotFoundException | IOException e) {
