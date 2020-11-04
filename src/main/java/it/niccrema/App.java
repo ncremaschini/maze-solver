@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import it.niccrema.exceptions.RoomNotFoundException;
 import it.niccrema.model.Item;

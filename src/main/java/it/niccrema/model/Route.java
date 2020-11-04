@@ -1,6 +1,5 @@
 package it.niccrema.model;
 
-import java.io.PrintStream;
 import java.util.LinkedList;
 import java.util.Objects;
 import java.util.stream.Collectors;
