@@ -25,7 +25,7 @@ public class MazeServiceMap2Test {
     private MazeService mazeService;
 
     @Before
-    public void loadMap() throws IOException {
+    public void initService() throws IOException {
         mazeService = new MazeService("src/test/resources/map2.json"); 
         maze = mazeService.getMaze();  
     }

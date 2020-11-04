@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,7 +24,7 @@ public class MazeServiceMap1Test {
     private static MazeService mazeService;
 
     @Before
-    public void loadMap() throws IOException {
+    public void initService() throws IOException {
         mazeService = new MazeService("src/test/resources/map1.json");
         maze = mazeService.getMaze();
     }
@@ -129,7 +128,6 @@ public class MazeServiceMap1Test {
         Route route = mazeService.findItems(2, itemsToCollect);
 
         Set<Item> collectedItems = new HashSet<>();
-
         route.getSteps().forEach(step -> collectedItems.addAll(step.getCollectedItems()));
 
         assertEquals(collectedItems.size(),1);
