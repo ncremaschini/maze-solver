@@ -128,3 +128,8 @@ Goals
 ----------------
   - TDD approach.
   - Build a Docker container with runnable code inside so that we can mount a volume in it and test on different maps.
+
+
+Problems
+----------------
+On build command, all maven-assembly-plugin dependency are downloaded. There's an open issue about [here](https://issues.apache.org/jira/browse/MASSEMBLY-874)
