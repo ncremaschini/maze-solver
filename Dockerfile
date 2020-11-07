@@ -1,6 +1,10 @@
-FROM openjdk:8
+FROM openjdk:8-jdk-alpine
 
-RUN apt-get update
-RUN apt-get install -y maven
+RUN apk update
+RUN apk add maven
+
+COPY pom.xml .
+
+RUN mvn clean package -Dmaven.main.skip -Dmaven.test.skip && rm -r target
 
 EXPOSE 9090
